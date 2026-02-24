@@ -1,4 +1,6 @@
 langgraph
-openai
+groq
 python-dotenv
 streamlit
+fastapi
+uvicorn
