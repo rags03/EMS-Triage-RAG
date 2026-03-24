@@ -1,4 +1,5 @@
 from .state import PainAssessmentState
+from ..rag.retriever import retrieve
 from groq import Groq
 from dotenv import load_dotenv, find_dotenv
 import os
@@ -27,23 +28,29 @@ def record_answer(state: PainAssessmentState) -> dict:
     return {step: user_input, "user_input": None}
 
 def generate_summary(state: PainAssessmentState) -> dict:
+    query = f"{state.get('quality')} pain in {state.get('region')} severity {state.get('severity')} onset {state.get('onset')}"
+    context = retrieve(query)
+
     response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
         messages=[
-            {"role": "system", "content": """You are an EMS triage assistant. 
-Based on the OPQRST pain assessment below, give a clear recommendation on whether the patient should:
+            {"role": "system", "content": f"""You are an EMS triage assistant.
+Based STRICTLY on the retrieved medical context below, give a clear recommendation on whether the patient should:
 1. Call 911 immediately
 2. Go to the ER today
 3. See a doctor within 24-48 hours
 4. Monitor at home and see a doctor if it worsens
-             
-Base your reasoning on established triage guidelines and provide evidence from sites such as:
-- Mayo Clinic (mayoclinic.org)
-- WebMD (webmd.com)
-- American College of Emergency Physicians (acep.org)
-- NIH MedlinePlus (medlineplus.gov)
-             
-Be concise and explain your reasoning. Also, make sure to remind the patient that you are NOT a doctor and that if they are in doubt, they should seek emergency care."""},
+
+Retrieved medical context:
+{context}
+
+IMPORTANT RULES:
+- You MUST base your recommendation strictly on the retrieved context above
+- Quote or reference specific information from the context in your reasoning
+- Do not use knowledge outside of the provided context
+- If the context does not contain enough information, say so explicitly
+
+Always remind the patient you are NOT a doctor and if in doubt, seek emergency care."""},
             {"role": "user", "content": f"""OPQRST Assessment:
 - Onset: {state.get('onset')}
 - Provocation: {state.get('provocation')}
