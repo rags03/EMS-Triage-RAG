@@ -1,6 +1,13 @@
 langgraph
 groq
 python-dotenv
-streamlit
 fastapi
 uvicorn
+chromadb
+sentence-transformers
+requests
+beautifulsoup4
+ragas
+datasets
+langchain-groq
+langchain-community
