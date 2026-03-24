@@ -14,6 +14,7 @@ A clinical triage chatbot that guides patients through the OPQRST pain assessmen
 4. Uses LLaMA 3.3 (via Groq) to generate a triage recommendation grounded in the retrieved context
 5. Recommends one of: Call 911, Go to the ER, See a doctor within 24-48 hours, or Monitor at home
 
+
 ---
 
 ## Architecture
@@ -94,6 +95,7 @@ uvicorn src.app.server:app
 ### 8. Open in your browser
 
 Go to: **http://localhost:8000**
+<img width="811" height="914" alt="image" src="https://github.com/user-attachments/assets/c1ce1d8d-822a-4e0d-999f-296260a430d2" />
 
 ---
 
